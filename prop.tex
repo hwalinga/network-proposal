@@ -11,7 +11,7 @@
     \addbibresource{prop.bib}
 
 \title{Predicting phage-host relationships using network fusion}
-\author{Hielke Walinga (4373561)}
+\author{Hielke Walinga (4373561) \\ hielkewalinga@gmail}
 \date{\today}
 
 \begin{document}
@@ -132,27 +132,53 @@ to other phage-host connection that don't have this information
 available \textit{using} the information for the similarity of the phages
 or the bacteria.
 
-To do this we first pick what network to use (either the phage-phage, or 
-the bacterium-bacterium) and then diffuse each column in the connection matrix,
-which corresponds to either a single phage or a single bacterium, and then 
-using the weights in the corresponding similarity graph.
+To do this we first pick what network to use (either the phage-phage $F$, or 
+the bacterium-bacterium $B$). It is probably best to make use of the sparse
+similarity matrix here ($F^*$ and $B^*$). 
+Then diffuse using a column in the connection matrix,
+which corresponds to either a single phage or a single bacterium, by 
+using the weights in the corresponding similarity graph. When working out 
+the math it will become clear that this method can be done in a single 
+step and has much resemblance to the previous SNF algorithm. 
+
+\begin{align}
+    \begin{split}
+    C_{t+1} &= F \times C_t \\
+    C_{t} &= (B \times C_{t - 1}^{T})^{T} \\
+          &= C_{t - 1} \times B^T \\
+    \hfil Combined: \\
+    C_{t+1} &= F \times C_{t - 1} \times B^T
+    \end{split}
+\end{align}
 
 \subsubsection{Making it converging}
 
 Since we are alternating between two different similarity matrices I don't think it will
 converge. To make sure the algorithm converges, I propose to alter the
-Laplacian matrix every iteration by reducing the percentage of weight
-that gradually to zero percent.
+connection matrix every iteration by gradually reducing the percentage of weight
+that gets moved around to zero percent.
+
 This can be mathematically be accomplished by altering the normalization
-function so the the self-similirity starts at some point and gradually 
-grows to one in which case all similarity is the self-similarity and no
-weight is anymore shifted.
+function so the the self-similirity starts at some point ($a(0) = \frac{1}{2}$) and gradually 
+grows to one in which case all similarity is the self-similarity 
+(i.e.\ the similariy matrix is an identity matrix)
+and no weight is shifted anymore.
+
+\begin{equation}
+    P^*(i, j) = 
+    \begin{cases}
+        (1 - a(t)) \times \cfrac{W(i, j)}{\sum_{i \in N_j}W(i, j)} & i \in N_j \\
+        \hfil a(t) & i == j \\
+        \hfil 0 & else
+    \end{cases}
+\end{equation}
 
 Additionally this adjustment can help to prevent weights drift to far away and
-can thereby help preserving some nestedness. I don't know
-what the exact formula for this reducing factor will look like, but I propose
-a convex function to reduce the impact it can have on disrupting the nestedness
-of a network.
+can thereby help preserving some nestedness. It is probably also best
+that this function that is responsible for reducing the amount of weight
+that is shifted is convex so that most of the shifted weight happens in the
+first iteration. I believe this will be best to prevent disrupting the 
+nestedness too much.
 
 \subsubsection{Performing network fusion on the connection matrix}
 
@@ -179,20 +205,17 @@ Finally, you can
 also create the sqaure matrix from the connection matrix by including the
 similarity weights already instead of setting those edges to zero. I also 
 think that such an approach tries to combine too much information too early.
-
-\subsubsection{Mathematical descriptions}
-
-The similarity matrix that we are using here is a weighted matrix. We can construct
-that one as follows:
-
-The update formulas look as follows:
-
-And can be simplified using:
+However it might still be interesting to investigate the affect of
+forcifully setting the similarities between bacteria and phages to zero 
+or to let them grow as well, or even initialize them to some value (fixed
+or otherwise).
 
 \subsubsection{A note on computational complexity}
 
 To reduce the computational I propose to make the similarity matrices sparse by only
 looking at the k-nearest neighbours for each similarity neighbour.
+This is also done in the SNF algorithm and can also trivially be applied 
+to the aforementioned formulas.
 
 \subsubsection{Notes on modular vs.\ nestedness}
 
