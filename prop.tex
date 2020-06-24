@@ -21,17 +21,97 @@
 \section{Introduction}
 
 Here we propose a method for predicting the phage-host relationships 
-by combining different metrics using network fusion techniques.
+by combining different sources of information using network fusion techniques.
 
 \subsection{Motivation}
 
 Bacteria are under a constant barrage of phages that act as viruses and
-integrate their DNA into the bacteria so that they can be multiplied. 
+integrate their DNA into the bacteria so that the phages can multiply themselves.
+This is a parasitic relation where the bacteria act as host to carry out the
+multiplication of the phage DNA. ??
+
 The bacterial communities are very diverse and almost all suffer from
-attachs by phages. Next to that, there is a lot of information about
+attacks by phages. Next to that, there is a lot of information about
 these attacks found in the DNA of both the phages and the bacteria. 
-That makes this an interesting subject to learn more about ecological 
+This gives interesting ways to indirectly infer what phages attack bacteria.
+It is an interesting subject to learn more about ecological 
 networks on the micro scale.
+
+In addition, there has been increased interest in the use of phages against
+bacterial infection. This is caused by an increasing number 
+of antibiotic resistant bacteria resistant bacteria. Using phages to 
+kill bacteria can help to better combat bacterial infection. ??
+
+\subsection{Representing the phage-host relationships in a bipartite graph}
+
+Here, we will model the phage-host relations as a bipartite graph. In this 
+graph we model the bacteria and the phages as nodes in a graph. 
+So, in the resulting graph we will have two kinds of nodes. One group 
+of nodes that each represent a kind of bacteria and another that represent
+a kind of phage.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/bipartite_class_01.png}
+    \caption{Another example of a bipartite network in ecology. What animals eat what plants. Source:~\cite{flores2016bimat}}
+\end{figure}
+
+Phage-host relationships are usually represented as a relation matrix or interconnection 
+matrix in which 
+an edge represents the possibility for a phage to be able to infect the 
+bacteria. We will refer to this matrix as C. The dimensions of this matrix are
+$f \times b$, where $f$ indicates the amount of phages and $b$ indicates the amount
+of bacteria. Now, each entry of the matrix represents a relation with one particular
+phage and one particular bacteria. 
+
+In addition to the relation matrix, we will also make use of the similarity matrices.
+We have two similarity matrices. One that indicates the similarity of phages
+with other phages. This matrix we call $F$ and has dimensions $f \times f$ 
+where $f$ indicates the 
+amount of phages. The other matrix indicates the similarity
+of the bacteria with the other bacteria. This matrix we call $B$ and has
+dimensions $b \times b$. Unlike the relation matrix $C$, the similarity matrices
+are symmetrical. 
+
+\subsection{Modularity and nestedness}
+
+Phage-host relationship graphs are often non-random and instead have certain 
+characteristics that are called its modularity and its nestedness. 
+
+When we call a bipartite graph modular it means that we can define certain
+groups that mostly have connections with other nodes in that group, but have less
+connections with nodes outside the group. Biological, this probably indicates
+that these bacteria and phages are living together and therefore the phages
+have mostly evolved to target those specific group of bacteria and cannot
+infect other bacteria that cannot be found in nature with those other phages. 
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.5\textwidth]{img/nested-vs-modular.png}
+\caption{Nestedness vs.\ modular infection matrices. Source:~\cite{weitz2013phage}}
+\end{figure}
+
+When investigating published relation matrices of phage-host relationships 
+based on empirical data, you will find that these matrices are mostly nested. 
+However, they note that this observation might be biased by the environments
+that have been analyzed in those experiments. Low resource environments for
+example might eliminate the general phages. Another bias they discovered is
+that network analysis of microbial communities in food production is often
+more modular. These communities are most likely selected by those food producers
+as they are more robust against phage attacks~\cite{weitz2013phage}.
+
+\subsection{What data is available}
+
+The proposed method tries to use information that is available for as well
+phage-host relationships as well as phage-phage and bacterium-bacterium
+relationships / similarities. Here summarized what these kinds of sources
+of information are.
+
+\subsubsection{Data sources for phage-host relationships}
+
+\subsubsection{Data sources for phage-phage relationships}
+
+\subsubsection{Data sources for bacterium-bacterium relationships}
 
 \subsection{Network fusion}
 
@@ -44,7 +124,7 @@ Here we propose to make use of an existing method called
 similarity network fusion (SNF)~\cite{wang2014similarity}
 with more details here~\cite{wang2012unsupervised}
 
-For a full explenation of the algorithm,
+For a full explanation of the algorithm,
 consult the papers, but in short, you have to create a similarity network
 for each source of information and then combine the networks using the 
 following algorithm:
@@ -54,7 +134,8 @@ then normalize this matrix to create the status matrix.
 Take the self-similarity as $\frac{1}{2}$.
 Then create a kernel matrix $P$ 
 by normalizing using the k-nearest neighbours $N_i$ which 
-results in a sparse matrix $P^*$.
+results in a sparse matrix $P^*$. We will keep using the * to indicate sparseness
+by nearest neighbour selection.
 
 \begin{equation}
     P(i, j) = 
@@ -84,45 +165,14 @@ represent two different information sources. Repeat the formulas till convergenc
 
 This can be extended to account for more than 2 information sources.
 
-\subsection{Representing the phage-host relationships in a bipartite graph}
-
-A bipartite graph is a network in which the vertices can be divided into two 
-groups in which there are only links from one group to the other. 
-
-The phage-host relationships can be represented in a bipartite graph. 
-Such a relationship is usually represented as a relation matrix in which 
-an edge represents the possibility for a phage to be able to infect the 
-bacteria.
-
-\subsection{Modularity and nestedness}
-
-\ldots
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.5\textwidth]{img/nested-vs-modular.png}
-\caption{Nestedness vs.\ modular infection matrices}
-\end{figure}
-
-\subsection{What data is available}
-
-The proposed method tries to use information that is available for as well
-phage-host relationships as well as phage-phage and bacterium-bacterium
-relationships / similarities. Here summarized what these kinds of sources
-of information are.
-
-\subsubsection{Data sources for phage-host relationships}
-
-\subsubsection{Data sources for phage-phage relationships}
-
-\subsubsection{Data sources for bacterium-bacterium relationships}
-
 \section{Related work}
 
 As far as I can find, the only computational work done on phage-host relationships 
 involves a single metric which is used to measure the possibility of a phage-host relationship~\cite{edwards2016computational}.
 I could not find references to an attempt to combine this result or to combine
 it with phage-phage or bacterium-bacterium similarity.
+There is however a paper that reports using ``iterative weighted distributed averaging''
+to apply network fusion on bipartite graphs~\cite{khan2007distributed}.
 
 \section{Proposed method}
 
@@ -145,7 +195,7 @@ or the bacteria.
 To do this we first pick what network to use (either the phage-phage $F$, or 
 the bacterium-bacterium $B$). (It is probably best to make use of the sparse
 similarity matrix here, $F^*$ and $B^*$.).
-Then multiply this with the connection matrix. This will then move the
+Then multiply this with the connection matrix ($C$). This will then move the
 weights over the strongest connection for each phage or bacterium.
 When working out the math it will become clear that this method can be done in a single 
 step and has much resemblance to the previous discussed SNF algorithm. 
@@ -329,13 +379,6 @@ this proposal or true for the real world.
 Especially the idea that phages that infect the same
 bacteria are more similar to each other and bacteria with the same phages
 as viruses are more similar to each other.
-
-\subsection{Deep learning approaches}
-
-There might be a way to represent this problem in such a way that there is a 
-way to work on this in a deep learning approach. Because of a lack of knowledge, 
-I find it hard to come up with something related so far, but might still
-be worth looking into.
 
 \printbibliography{}
 
