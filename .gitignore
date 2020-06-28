@@ -287,3 +287,5 @@ TSWLatexianTemp*
 *.auxtarget.make
 *.bib
 *.d
+
+*.make
