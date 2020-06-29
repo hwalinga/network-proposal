@@ -279,10 +279,12 @@ represent two different information sources. Repeat the formulas till convergenc
 
 This can be extended to account for more than 2 information sources.
 
+A visualization of this algorithm is depicted in figure~\ref{fig:sim}.
+
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1\textwidth]{img/sim.png}
-    \caption{Visuzation of SNF. Source~\cite{wang2014similarity}}\label{fig:sim}
+    \caption{Visualization of SNF. Source~\cite{wang2014similarity}}\label{fig:sim}
 \end{figure}
 
 \section{Related work}
@@ -357,10 +359,12 @@ one step. These steps can be repeated $n$ times.
 
 \end{minipage}
 
+\hfill
+
 \begin{figure}[hb]
     \centering
-    \includegraphics[width=0.6\textwidth]{img/phage-bac-diffusion_cropped.pdf}
-    \caption{Visualization of diffusion of relation matrix (purple) using the similarity matrices (red for phages, and blue for bacteria)}\label{fig:phagediff}
+    \includegraphics[width=0.5\textwidth]{img/phage-bac-diffusion_cropped.pdf}
+    \caption{Visualization of diffusion of relation matrix (purple) using the similarity matrices (red for phages, and blue for bacteria).}\label{fig:phagediff}
 \end{figure}
 
 \subsubsection{Modification to ensure convergence}
@@ -452,6 +456,12 @@ Here we merge connection matrix $C_w$ with $C_v$. In the derivation $0_x$ indica
      C_{v,t+1} &= C^{*,T}_w C_v C^{*,T}_w
 \end{aligned}
 \end{equation}
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/connection-diff_cropped.pdf}
+    \caption{Visualization of the diffusion of the connection matrix.}\label{fig:connectdiff}
+\end{figure}
 
 \subsubsection{Discussion: A note on the order and combination of steps}
 
