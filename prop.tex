@@ -6,7 +6,7 @@
     \usepackage[utf8]{inputenc}
 
     \usepackage[backend=biber,doi=true]{biblatex}
-
+    \usepackage{microtype}
     \usepackage{graphicx}   
     % Related to math
     \usepackage{amsmath,amssymb,amsfonts,amsthm}
@@ -33,6 +33,8 @@
     \lhead{Predicting phage-host relationships using network fusion}
     \rfoot{\thepage}
 
+    % \hyphenation{thatshouldnot}
+    \usepackage[none]{hyphenat}
     \addbibresource{prop.bib}
 
 \title{Predicting phage-host relationships using network fusion}
@@ -47,10 +49,14 @@
 
 Here we propose methods for predicting phage-host relationships 
 using network fusion techniques. 
-These techniques allow us to combine different sources of information.
+We wil model the phage-host relationships using a bipartite graph
+and try to combine multiple sources of information to predict
+those relationships
+
+Network fusion will allow us to combine different sources of information.
 Network fusion is generally only applied to similarity matrices,
 but here we propose extensions to the existing network fusion algorithm so that it 
-can be used with bipartite graphs as well.
+can be used for bipartite graphs as well.
 
 \subsection{Motivation}
 
@@ -61,8 +67,8 @@ multiplication of the phage DNA~\cite{seed2015battling}.
 
 The bacterial communities are very diverse and almost all suffer from
 attacks by phages. Because of the need of phages to be reproduced by the bacteria,
-you can find glues about what phages attack what bacteria by looking into
-DNA of both the phages and the bacteria.
+you can find clues about what phages attack what bacteria by looking into
+the genomes of both the phages and the bacteria.
 With this information it gives multiple ways to indirectly infer what phages attack bacteria.
 It is therefore an interesting subject to learn more about ecological 
 networks on the micro scale.
@@ -71,13 +77,15 @@ In addition, there has been an increased interest in the use of phages against
 bacterial infections. This is caused by an increasing number 
 of antibiotic resistant bacteria. Using phages to 
 kill bacteria can help to better treat bacterial infection~\cite{nobrega2015revisiting}.
+However, we first have to identify what phages kill what bacteria.
 
 \subsection{Representing the phage-host relationships in a bipartite graph}
 
 We will model the phage-host relations as a bipartite graph. 
-Bipartite networks can frequently be found in to represent 
+Bipartite networks can frequently be found to represent 
 ecological networks. An example of this is depicted in figure~\ref{fig:networkecology}.
-In this graph the bacteria and the phages are represented as nodes.
+
+In the bipartite graph the bacteria and the phages are represented as nodes.
 So, in the bipartite graph we will have two kinds of nodes. One group 
 of nodes that each represent a kind of bacteria and another that represent
 a kind of phage.
@@ -94,15 +102,16 @@ a kind of phage.
 \end{figure}
 
 Usually, when representing bipartite networks, only the edges between the groups
-are used. However, here we want to infer the weights of those edges by also 
+are of interest. However, here we want to infer the weights of the edges
+between the groups by also 
 looking at the edges within the groups.
 
-We will divide the information of the graph in three matrices. 
+We will therefore divide the information of the graph in three matrices. 
 There are two matrices that represents the similarity between respectively
 the phages or the bacteria, and there is a third matrix that represents the
 relation between the phages and the bacteria. Usually a bipartite graph is
-only represented using this third matrix, and when referred to the bipartite graph
-we usually mean only this matrix. However, we will also make use 
+only represented using this third matrix, and when referred to the bipartite graph,
+this matrix is usually the one that is meant. However, here we will also make use 
 of the information of the similarity matrices between phages and between bacteria.
 
 In the relation matrix, or interconnection matrix, 
@@ -185,7 +194,7 @@ makes it also likely that the phage infects the bacterium.
 
 \textbf{Genetic homology} Since phages integrate their DNA into the bacteria, 
 over time some left-overs of genes might still be found in the bacteria. 
-Comparing genes in phages and bacteria might give glues about the relationships
+Comparing genes in phages and bacteria might give clues about the relationships
 the bacteria and phages have.
 
 \textbf{Oligonucleotide profiles} In addition to the genetic homology, you can 
@@ -208,7 +217,7 @@ confirming a relationship between the found phage and the bacterium.
 \textbf{CRISPR} To defend themselves against phages, bacteria have acquired
 an immune system that saves the intruders' information in CRISPR arrays. 
 Extracting the CRISPR arrays and matching them with phages might give
-glues about what phages the bacteria faces.
+clues about what phages the bacteria faces.
 
 \subsubsection{Phage-phage relationships}
 
@@ -223,7 +232,7 @@ the bacteria.
 Just as for phages, the already mentioned metrics can also be used to find
 relationships between bacteria. Even though a CRISPR spacer might not hit
 in a phage, using it for bacterium-bacterium similarity can still be helpful
-as it still indicates that they (used to) have the same phages as attackers.
+as it still indicates that they (used to) have the same phages that attacked them.
 Here we can also focus on the phylogeny
 of the proteins of the defense mechanisms of the bacteria.
 
@@ -382,7 +391,11 @@ and let it gradually grow to one.
 When it reaches one, the normalization transforms the similarity matrix into
 an identity matrix. Now all similarity is self-similarity 
 and no weight is shifted anymore. 
-(Multiplication with an identity matrix does not change the matrix anymore.)
+Multiplication with an identity matrix does not change the matrix anymore.
+Keep in mind that this change of normalization only happens for the 
+similarity matrices. The relation matrix remains untouched by the transformation, 
+and will gradually change less and less until the similarity matrices transforms
+into a identity matrix. 
 
 \begin{equation}
     \begin{gathered}
@@ -398,7 +411,7 @@ and no weight is shifted anymore.
 \end{equation}
 
 What's more, this adjustment can help to prevent weights drift too far away and
-can thereby preserve some nestedness. It is probably also best
+can thereby preserve some nestedness. It is therefore probably also best
 that this function that is responsible for reducing the amount of shifted weight
 is convex so that most of the change happens in the 
 first iteration. I believe this will be best to prevent disrupting the 
