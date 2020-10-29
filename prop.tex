@@ -6,10 +6,10 @@
     \usepackage[utf8]{inputenc}
 
     \usepackage[backend=biber,doi=true]{biblatex}
-    \usepackage{microtype}
+    \usepackage{microtype} % more advanced formatting
     \usepackage{graphicx}   
-    % Related to math
-    \usepackage{amsmath,amssymb,amsfonts,amsthm}
+    \usepackage{amsmath,amssymb,amsfonts,amsthm} % Related to math
+    \usepackage{algorithmicx} % pseudo code suggestion
 
     \usepackage{hyperref}
     \usepackage{xcolor}
@@ -20,10 +20,11 @@
         urlcolor={blue!80!black}
     }
 
+    % Fonts
     % \usepackage{libertine}
     % \usepackage{libertinust1math}
     \usepackage[sc]{mathpazo}
-    \linespread{1.05}         % Palladio needs more leading (space between lines)
+    \linespread{1.05} % Palladio needs more leading (space between lines)
     \usepackage[T1]{fontenc}
 
     \usepackage{fancyhdr}
@@ -35,7 +36,7 @@
 
     % \hyphenation{thatshouldnot}
     \usepackage[none]{hyphenat}
-    \addbibresource{prop.bib}
+    \addbibresource{references.bib}
 
 \title{Predicting phage-host relationships using network fusion}
 \author{Hielke Walinga (4373561) \\ hielkewalinga@gmail}
